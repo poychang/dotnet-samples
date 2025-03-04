@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.35821.62
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01-BasicInvoke", "01-BasicInvoke\01-BasicInvoke.csproj", "{2E46E22A-1F53-47A9-B0DE-3436D60970DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicInvoke", "BasicInvoke\BasicInvoke.csproj", "{2E46E22A-1F53-47A9-B0DE-3436D60970DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicInvokeWithServiceId", "BasicInvokeWithServiceId\BasicInvokeWithServiceId.csproj", "{D5395D2E-DE78-425E-B59B-C074CE7CA9F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicChat", "BasicChat\BasicChat.csproj", "{30D0652E-A1E4-4D98-A312-632316A64507}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{2E46E22A-1F53-47A9-B0DE-3436D60970DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E46E22A-1F53-47A9-B0DE-3436D60970DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E46E22A-1F53-47A9-B0DE-3436D60970DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5395D2E-DE78-425E-B59B-C074CE7CA9F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5395D2E-DE78-425E-B59B-C074CE7CA9F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5395D2E-DE78-425E-B59B-C074CE7CA9F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5395D2E-DE78-425E-B59B-C074CE7CA9F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30D0652E-A1E4-4D98-A312-632316A64507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30D0652E-A1E4-4D98-A312-632316A64507}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30D0652E-A1E4-4D98-A312-632316A64507}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30D0652E-A1E4-4D98-A312-632316A64507}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
