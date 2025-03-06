@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>event-stream</title>
+</head>
+
+<body>
+    <div id="response"></div>
+    <script>
+        function stream(url, callback) {
+            const myHeaders = new Headers();
+            myHeaders.append('Content-Type', 'text/event-stream');
+            const requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow',
+            };
+            fetch(url, requestOptions)
+                .then(response => {
+                    if (!response.ok) throw new Error("Network error!");
+
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder("utf-8");
+                    let buffer = '';
+
+                    reader.read().then(function pump({ done, value }) {
+                        // "done" 是布林值，代表該資料流是否結束
+                        // "value" 是 Uint8Array，代表每個資料區塊的內容值
+                        // 當收到資料流結束的訊號，則關閉此資料流
+                        if (done) return;
+
+                        // 將取得的 bytes 轉成字串並加入 buffer
+                        buffer += decoder.decode(value, { stream: true });
+
+                        // SSE 格式是以兩個換行符號分隔不同事件
+                        const events = buffer.split('\n\n');
+                        // 最後一筆可能不完整，先保留在 buffer 中
+                        buffer = events.pop();
+
+                        // 處理每一筆完整的 event
+                        events.forEach(chunk => {
+                            if (chunk.trim() === '') return;
+                            // 將每一筆事件依照行分解
+                            const lines = chunk.split('\n');
+                            let eventName = "delta"; // 預設事件名稱為 "delta"
+                            let data = "";
+                            lines.forEach(line => {
+                                if (line.startsWith("event:")) {
+                                    eventName = line.substring(6).trim();
+                                } else if (line.startsWith("data:")) {
+                                    // 若有多行 data，可連接起來
+                                    data += line.substring(5).trim();
+                                }
+                            });
+
+                            callback(data);
+                        });
+
+                        // 讀取下一段資料區塊
+                        return reader.read().then(pump);
+                    });
+                })
+                .catch((error) => console.log('error', error));
+        }
+
+        const url = 'https://localhost:7170/stream/event-stream/';
+        stream(url, (data) => {
+            console.log(data);
+            document.getElementById('response').innerHTML += data + '<br>';
+        });
+    </script>
+
+</body>
+
+</html>

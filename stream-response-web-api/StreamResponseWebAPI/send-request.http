@@ -1,0 +1,9 @@
+@StreamResponseWebAPI_HostAddress = http://localhost:5250
+
+GET {{StreamResponseWebAPI_HostAddress}}/stream/event-stream/
+Accept: application/json
+
+###
+
+GET {{StreamResponseWebAPI_HostAddress}}/stream/binary-stream/
+Accept: application/json

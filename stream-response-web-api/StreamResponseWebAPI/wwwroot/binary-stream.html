@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>binary-stream</title>
+</head>
+
+<body>
+    <div id="response"></div>
+    <script>
+        function stream(url, callback) {
+            const myHeaders = new Headers();
+            myHeaders.append('Content-Type', 'application/json');
+            const requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow',
+            };
+            fetch(url, requestOptions)
+                .then((response) => {
+                    const reader = response.body.getReader();
+                    // 處理資料流中的每個資料區塊
+                    reader.read().then(function pump({ done, value }) {
+                        // "done" 是布林值，代表該資料流是否結束
+                        // "value" 是 Uint8Array，代表每個資料區塊的內容值
+                        // 當收到資料流結束的訊號，則關閉此資料流
+                        if (done) return;
+
+                        // 將 Uint8Array 轉成 string，然後交給 callback 函式處理
+                        let data = new TextDecoder().decode(value);
+                        callback(data);
+
+                        // 讀取下一段資料區塊
+                        return reader.read().then(pump);
+                    });
+                })
+                .catch((error) => console.log('error', error));
+        }
+
+        const url = 'https://localhost:7170/stream/binary-stream/';
+        stream(url, (data) => {
+            console.log(data);
+            document.getElementById('response').innerHTML += data + '<br>';
+        });
+    </script>
+
+</body>
+
+</html>
