@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicInvokeWithServiceId", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicChat", "BasicChat\BasicChat.csproj", "{30D0652E-A1E4-4D98-A312-632316A64507}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicKernelMemory", "BasicKernelMemory\BasicKernelMemory.csproj", "{9468E01F-DCA9-4EC0-8871-B5E7A6FD81F4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "KernelMemory", "KernelMemory", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,9 +31,16 @@ Global
 		{30D0652E-A1E4-4D98-A312-632316A64507}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30D0652E-A1E4-4D98-A312-632316A64507}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30D0652E-A1E4-4D98-A312-632316A64507}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9468E01F-DCA9-4EC0-8871-B5E7A6FD81F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9468E01F-DCA9-4EC0-8871-B5E7A6FD81F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9468E01F-DCA9-4EC0-8871-B5E7A6FD81F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9468E01F-DCA9-4EC0-8871-B5E7A6FD81F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9468E01F-DCA9-4EC0-8871-B5E7A6FD81F4} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9886B515-0BE5-4796-9E9C-7F44EBCD4FDE}
