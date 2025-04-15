@@ -4,7 +4,7 @@ using Microsoft.SemanticKernel;
 var config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 
 var endpoint = config["AzureOpenAI:Endpoint"] ?? string.Empty;
-var apiKey = config["AzureOpenAI:Key"] ?? string.Empty;
+var apiKey = config["AzureOpenAI:APIKey"] ?? string.Empty;
 var deploymentName = "gpt-4o-mini";
 
 // 建立 kernel，並設定使用 Azure OpenAI 的 chat completion 功能
