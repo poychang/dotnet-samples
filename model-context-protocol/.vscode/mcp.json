@@ -1,0 +1,16 @@
+{
+    "servers": {
+        "my-mcp-local-server": {
+            "type": "stdio",
+            "command": "dotnet",
+            "args": [
+                "run",
+                "--project",
+                "C:\\Users\\poychang\\Code\\GitHub\\dotnet-samples\\model-context-protocol\\LocalServer\\LocalServer.csproj"
+            ]
+        },
+        "my-mcp-remote-server": {
+            "url": "http://localhost:3001/mcp"
+        }
+    }
+}

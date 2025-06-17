@@ -1,0 +1,6 @@
+@RemoteServer_HostAddress = http://localhost:5286
+
+GET {{RemoteServer_HostAddress}}/
+Accept: application/json
+
+###
