@@ -1,0 +1,6 @@
+@StreamableHttpServer_HostAddress = http://localhost:5036
+
+GET {{StreamableHttpServer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
