@@ -3,6 +3,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = Host.CreateEmptyApplicationBuilder(settings: null);
 
@@ -14,11 +16,10 @@ builder.Logging.AddConsole(consoleLogOptions =>
 builder.Services
     .AddMcpServer()
     .WithStdioServerTransport()
-    //.WithTools<EchoTool>()
-    .WithToolsFromAssembly();
+    // 使用 NativeAOT 時，要使用有標註型別的序列化選項
+    .WithToolsFromAssembly(serializerOptions: new() { TypeInfoResolver = SourceGenerationJsonContext.Default });
 
 await builder.Build().RunAsync();
-
 
 
 [McpServerToolType]
@@ -30,3 +31,8 @@ public sealed class EchoTool
     [McpServerTool, Description("Echoes in reveres the message.")]
     public static string ReveresEcho(string message) => $"{ [.. message.Reverse()]}";
 }
+
+// 使用 NativeAOT 來架構 Local Server 應用程式時，會需要標註序列化會涉及的型別，讓 MCP Server 可以正確序列化和反序列化這些型別。
+[JsonSerializable(typeof(Dictionary<string, string>))]
+[JsonSerializable(typeof(EchoTool))]
+internal partial class SourceGenerationJsonContext : JsonSerializerContext { }

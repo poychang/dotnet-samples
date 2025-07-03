@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalServer", "LocalServer\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteServer", "RemoteServer\RemoteServer.csproj", "{1D5B9F78-B554-43A3-8283-08FE7C12E97C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleClient", "ConsoleClient\ConsoleClient.csproj", "{F8156C21-7E3B-4227-B7FF-532399C03AE5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1D5B9F78-B554-43A3-8283-08FE7C12E97C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D5B9F78-B554-43A3-8283-08FE7C12E97C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D5B9F78-B554-43A3-8283-08FE7C12E97C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8156C21-7E3B-4227-B7FF-532399C03AE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8156C21-7E3B-4227-B7FF-532399C03AE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8156C21-7E3B-4227-B7FF-532399C03AE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8156C21-7E3B-4227-B7FF-532399C03AE5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
