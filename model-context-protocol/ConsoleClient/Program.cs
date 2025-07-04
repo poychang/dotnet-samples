@@ -11,10 +11,11 @@ var config = new ConfigurationBuilder()
     .Build();
 
 // 準備 Semantic Kernel
+// ------------------------------------------------------------
 var builder = Kernel.CreateBuilder();
 // builder.Services.AddLogging(c => c.AddDebug().SetMinimumLevel(LogLevel.Trace));
 
-// 設定 OpenAI 的 API 金鑰和模型 ID
+// 設定 Azure OpenAI API
 builder.Services.AddAzureOpenAIChatCompletion(
     deploymentName: config["AzureOpenAI:DeploymentName"] ?? "gpt-4o",
     endpoint: config["AzureOpenAI:Endpoint"] ?? "",
@@ -24,38 +25,52 @@ var kernel = builder.Build();
 
 
 // 建立 MCP client
+// ------------------------------------------------------------
+// 建立可在本地端運行的 MCP Server，並透過 StdioClientTransport 連接
+var localProjectTransport = new StdioClientTransport(new()
+{
+    Name = "LocalMcpServer",
+    // 假設 MCP Server 的執行檔在使用 dotnet CLI 所執行的指定專案
+    Command = "dotnet",
+    Arguments = ["run", "--project", "../LocalServer/LocalServer.csproj"],
+});
+var localExeTransport = new StdioClientTransport(new()
+{
+    Name = "LocalMcpServer",
+    // 假設 MCP Server 的執行檔在 "c:\tools\mcp\LocalServer.exe" 路徑下
+    Command = "C:\\tools\\mcp\\LocalServer.exe",
+    Arguments = [],
+});
+// 建立在遠端運行的 MCP Server，並透過 SseClientTransport 連接
+var remoteTransport = new SseClientTransport(new() {
+    Name = "RemoteMcpServer",
+    Endpoint = new Uri("http://localhost:3001/mcp"),
+});
+
 // 注意：這裡假設 MCP Server 可在本地端運行，並且可以透過 StdioClientTransport 連接
-await using IMcpClient mcpClient = await McpClientFactory.CreateAsync(
-    new StdioClientTransport(
-        // 注意：這裡假設 MCP Server 的執行檔在 "../LocalServer/LocalServer.csproj" 路徑下
-        new()
-        {
-            Name = "LocalMcpServer",
-            Command = "dotnet",
-            Arguments = ["run", "--project", "../LocalServer/LocalServer.csproj"],
-        }
-    )
-);
+await using IMcpClient mcpClient = await McpClientFactory.CreateAsync(remoteTransport);
 
-// 取得 tools 並註冊到 Semantic Kernel
+
+// 取得 MCP Tools 清單
+// ------------------------------------------------------------
 var tools = await mcpClient.ListToolsAsync().ConfigureAwait(false);
-
 // 列出 MCP工具名稱和描述
-Console.WriteLine("\n\nAvailable MCP Tools:");
+Console.WriteLine("\nAvailable MCP Tools:");
 foreach (var tool in tools)
 {
-    Console.WriteLine($"{tool.Name}: {tool.Description}");
+    Console.WriteLine($"\t{tool.Name}: {tool.Description}");
 }
+Console.WriteLine();
 
-// 將 MCP 工具轉換為 Semantic Kernel 函數
-// 並加入到 Kernel 中
+
+// 將 MCP 工具轉換為 Semantic Kernel 函數並註冊到 Semantic Kernel 中
+// ------------------------------------------------------------
 kernel.Plugins.AddFromFunctions("McpTools", tools.Select(t => t.AsKernelFunction()));
 
 
 
-
-
-
+// 測試具有 MCP 工具的對話
+// ------------------------------------------------------------
 // Create chat history 物件，並且加入系統訊息
 var history = new ChatHistory();
 history.AddSystemMessage("你是一位 MCP 工具助理，會根據使用者輸入決定是否要使用 tool 來回答問題。");
@@ -92,3 +107,6 @@ while (!string.IsNullOrEmpty(userInput = Console.ReadLine()))
     // Get user input again
     Console.Write("User > ");
 }
+
+Console.WriteLine("\n\nExiting...");
+await mcpClient.DisposeAsync().ConfigureAwait(false);

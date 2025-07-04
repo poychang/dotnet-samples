@@ -18,8 +18,11 @@ app.Run("http://localhost:3001");
 
 
 [McpServerToolType]
-public static class EchoTool
+public sealed class EchoTool
 {
     [McpServerTool, Description("Echoes the message back to the client.")]
-    public static string Echo(string message) => $"Hello from Remote MCP Server: {message}";
+    public static string Echo(string message) => $"[Remote MCP Server({nameof(Echo)})] {message}";
+
+    [McpServerTool, Description("Echoes in reveres the message.")]
+    public static string ReveresEcho(string message) => $"[Remote MCP Server({nameof(ReveresEcho)})] { [.. message.Reverse()]}";
 }

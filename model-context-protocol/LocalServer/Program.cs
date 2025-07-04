@@ -26,10 +26,10 @@ await builder.Build().RunAsync();
 public sealed class EchoTool
 {
     [McpServerTool, Description("Echoes the message back to the client.")]
-    public static string Echo(string message) => $"Hello from Local MCP Server: {message}";
+    public static string Echo(string message) => $"[Local MCP Server({nameof(Echo)})] {message}";
 
     [McpServerTool, Description("Echoes in reveres the message.")]
-    public static string ReveresEcho(string message) => $"{ [.. message.Reverse()]}";
+    public static string ReveresEcho(string message) => $"[Local MCP Server({nameof(ReveresEcho)})] { [.. message.Reverse()]}";
 }
 
 // 使用 NativeAOT 來架構 Local Server 應用程式時，會需要標註序列化會涉及的型別，讓 MCP Server 可以正確序列化和反序列化這些型別。
