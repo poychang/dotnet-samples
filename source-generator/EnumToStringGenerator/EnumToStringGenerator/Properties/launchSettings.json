@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "EnumToStringGenerator": {
+      "commandName": "Project"
+    },
+    "DebugWithApp": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\EnumToStringGeneratorApp\\EnumToStringGeneratorApp.csproj"
+    }
+  }
+}
