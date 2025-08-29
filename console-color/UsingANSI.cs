@@ -63,9 +63,12 @@ public class UsingANSI
         Console.WriteLine($"\x1b[1;33m{data}\x1b[0m");
         Console.WriteLine("Hello, World!");
     }
-    
+
     // 產生 SGR 轉義序列：\x1b[<codes>m
     static string Sgr(params int[] codes) => "\x1b[" + string.Join(';', codes) + "m";
+    static string Sgr(bool showCode = false, params int[] codes)
+        => "\x1b[" + string.Join(';', codes) + "m"
+        + (showCode ? $"\\x1b[{string.Join(';', codes)}m " : string.Empty);
 
     public static void RunColorTable()
     {
@@ -102,7 +105,7 @@ public class UsingANSI
         Console.WriteLine("前景 (30–37):");
         for (int i = 0; i < 8; i++)
         {
-            Console.Write(Sgr(30 + i));
+            Console.Write(Sgr(showCode: true, 30 + i));
             Console.Write(names[i] + " ");
         }
         Console.Write(Sgr(0));
@@ -111,7 +114,7 @@ public class UsingANSI
         Console.WriteLine("亮前景 (90–97):");
         for (int i = 0; i < 8; i++)
         {
-            Console.Write(Sgr(90 + i));
+            Console.Write(Sgr(showCode: true, 90 + i));
             Console.Write(names[i] + " ");
         }
         Console.Write(Sgr(0));
@@ -121,8 +124,8 @@ public class UsingANSI
         for (int i = 0; i < 8; i++)
         {
             Console.Write(Sgr(30 + (i == 0 ? 7 : 0))); // 讓字在背景上看得到：黑底白字/白底黑字
-            Console.Write(Sgr(40 + i));
-            Console.Write("  " + names[i] + "  ");
+            Console.Write(Sgr(showCode: true, 40 + i));
+            Console.Write(" " + names[i] + " ");
             Console.Write(Sgr(0));
             Console.Write(" ");
         }
@@ -132,8 +135,8 @@ public class UsingANSI
         for (int i = 0; i < 8; i++)
         {
             Console.Write(Sgr(30 + (i == 7 ? 0 : 7)));
-            Console.Write(Sgr(100 + i));
-            Console.Write("  " + names[i] + "  ");
+            Console.Write(Sgr(showCode: true, 100 + i));
+            Console.Write(" " + names[i] + " ");
             Console.Write(Sgr(0));
             Console.Write(" ");
         }
