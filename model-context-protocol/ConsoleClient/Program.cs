@@ -19,7 +19,8 @@ var builder = Kernel.CreateBuilder();
 builder.Services.AddAzureOpenAIChatCompletion(
     deploymentName: config["AzureOpenAI:DeploymentName"] ?? "gpt-4o",
     endpoint: config["AzureOpenAI:Endpoint"] ?? "",
-    apiKey: config["AzureOpenAI:APIKey"] ?? ""
+    apiKey: config["AzureOpenAI:APIKey"] ?? "",
+    httpClient: HttpLogger.GetHttpClient(true)
 );
 var kernel = builder.Build();
 
@@ -44,7 +45,7 @@ var localExeTransport = new StdioClientTransport(new()
 // 建立在遠端運行的 MCP Server，並透過 SseClientTransport 連接
 var remoteTransport = new SseClientTransport(new() {
     Name = "RemoteMcpServer",
-    Endpoint = new Uri("http://localhost:3001/mcp"),
+    Endpoint = new Uri("https://columns-lab.chicken-house.net/api/mcp/"),
 });
 
 // 注意：這裡假設 MCP Server 可在本地端運行，並且可以透過 StdioClientTransport 連接
@@ -73,13 +74,13 @@ kernel.Plugins.AddFromFunctions("McpTools", tools.Select(t => t.AsKernelFunction
 // ------------------------------------------------------------
 // Create chat history 物件，並且加入系統訊息
 var history = new ChatHistory();
-history.AddSystemMessage("你是一位 MCP 工具助理，會根據使用者輸入決定是否要使用 tool 來回答問題。");
+history.AddSystemMessage("你是一位 Model Context Protocol 工具助理，會根據使用者輸入決定是否要使用 tool 來回答問題。");
 
 // Get chat completion service
 var chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
 
 // 開始對談
-Console.Write("User > ");
+Console.Write("\x1b[44mUser >\u001b[0m ");
 string? userInput;
 while (!string.IsNullOrEmpty(userInput = Console.ReadLine()))
 {
@@ -99,13 +100,13 @@ while (!string.IsNullOrEmpty(userInput = Console.ReadLine()))
         kernel: kernel);
 
     // Print the results
-    Console.WriteLine("Assistant > " + result);
+    Console.WriteLine("\x1b[42mAssistant >\x1b[0m " + result);
 
     // Add the message from the agent to the chat history
     history.AddMessage(result.Role, result.Content ?? string.Empty);
 
     // Get user input again
-    Console.Write("User > ");
+    Console.Write("\x1b[44mUser >\u001b[0m ");
 }
 
 Console.WriteLine("\n\nExiting...");
