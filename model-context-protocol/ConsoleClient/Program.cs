@@ -45,7 +45,7 @@ var localExeTransport = new StdioClientTransport(new()
 // 建立在遠端運行的 MCP Server，並透過 SseClientTransport 連接
 var remoteTransport = new SseClientTransport(new() {
     Name = "RemoteMcpServer",
-    Endpoint = new Uri("https://columns-lab.chicken-house.net/api/mcp/"),
+    Endpoint = new Uri("http://localhost:3001/mcp"),
 });
 
 // 注意：這裡假設 MCP Server 可在本地端運行，並且可以透過 StdioClientTransport 連接
