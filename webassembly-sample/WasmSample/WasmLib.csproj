@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <!-- 讓 C# 編為 WebAssembly NativeAOT -->
+        <WasmBuildNative>true</WasmBuildNative>
+
+        <!-- 精簡體積 -->
+        <!--<PublishTrimmed>true</PublishTrimmed>-->
+        <InvariantGlobalization>true</InvariantGlobalization>
+
+        <!-- （可選）允許 Roslyn 編譯器中的程式碼產生器使用指標進行 JS Interop -->
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+        <!-- （可選）啟用 SIMD、調整堆疊 -->
+        <!-- <WasmEnableSIMD>true</WasmEnableSIMD> -->
+        <!-- <WasmStackSize>2MB</WasmStackSize> -->
+    </PropertyGroup>
+
+    <!-- 把 wwwroot 裡的靜態檔(載入器與測試頁)一起發佈 -->
+    <ItemGroup>
+        <WasmExtraFilesToDeploy Include="wwwroot/**" />
+    </ItemGroup>
+
+</Project>

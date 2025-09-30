@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Templates/">
+    <Project Path="WasiConsoleApp/WasiConsoleApp.csproj" Id="8ccc39f4-b568-4873-8837-7871720a15cb" />
+    <Project Path="WebAssemblyBrowserApp/WebAssemblyBrowserApp.csproj" Id="52dc8d80-3be5-40ce-a501-b6aa9b521868" />
+    <Project Path="WebAssemblyConsoleApp/WebAssemblyConsoleApp.csproj" Id="5ae2e2d5-ee9f-4f2f-8981-9aaf57cd9fce" />
+  </Folder>
+  <Project Path="WasmSample/WasmLib.csproj" />
+</Solution>
