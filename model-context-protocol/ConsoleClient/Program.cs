@@ -17,9 +17,9 @@ var builder = Kernel.CreateBuilder();
 
 // 設定 Azure OpenAI API
 builder.Services.AddAzureOpenAIChatCompletion(
-    deploymentName: config["AzureOpenAI:DeploymentName"] ?? "gpt-4o",
-    endpoint: config["AzureOpenAI:Endpoint"] ?? "",
-    apiKey: config["AzureOpenAI:APIKey"] ?? "",
+    deploymentName: config["PC:AzureOpenAI:DeploymentName"] ?? "MODEL-NAME",
+    endpoint: config["PC:AzureOpenAI:Endpoint"] ?? "https://RESOURCE-NAME.openai.azure.com/",
+    apiKey: config["PC:AzureOpenAI:APIKey"] ?? "",
     httpClient: HttpLogger.GetHttpClient(true)
 );
 var kernel = builder.Build();
@@ -43,13 +43,14 @@ var localExeTransport = new StdioClientTransport(new()
     Arguments = [],
 });
 // 建立在遠端運行的 MCP Server，並透過 SseClientTransport 連接
-var remoteTransport = new SseClientTransport(new() {
+var remoteTransport = new HttpClientTransport(new()
+{
     Name = "RemoteMcpServer",
     Endpoint = new Uri("http://localhost:3001/mcp"),
 });
 
 // 注意：這裡假設 MCP Server 可在本地端運行，並且可以透過 StdioClientTransport 連接
-await using IMcpClient mcpClient = await McpClientFactory.CreateAsync(remoteTransport);
+await using var mcpClient = await McpClient.CreateAsync(remoteTransport);
 
 
 // 取得 MCP Tools 清單
