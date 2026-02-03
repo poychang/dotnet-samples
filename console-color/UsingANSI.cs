@@ -30,12 +30,12 @@ ESC [ <SGR參數> m
 | 7       | 反白                     |
 | 22      | 取消粗體                 |
 | 24      | 取消底線                 |
-| 30–37   | 前景色（文字顏色）       |
+| 30-37   | 前景色（文字顏色）       |
 | 39      | 重設前景色               |
-| 40–47   | 背景色                   |
+| 40-47   | 背景色                   |
 | 49      | 重設背景色               |
-| 90–97   | 高亮前景色               |
-| 100–107 | 高亮背景色               |
+| 90-97   | 高亮前景色               |
+| 100-107 | 高亮背景色               |
 
 ## 顏色範例
 
@@ -51,6 +51,48 @@ Console.WriteLine("\x1b[1;31m這是紅色粗體文字\x1b[0m");
 ```
 
 這段程式會在支援 ANSI 的終端機中顯示紅色粗體文字，然後重設樣式。
+
+
+=== 16 色（一般/亮色） ===
+前景 (30-37):
+    \x1b[30m Black
+    \x1b[31m Red
+    \x1b[32m Green
+    \x1b[33m Yellow
+    \x1b[34m Blue
+    \x1b[35m Magenta
+    \x1b[36m Cyan
+    \x1b[37m White
+
+亮前景 (90-97):
+    \x1b[90m Black
+    \x1b[91m Red
+    \x1b[92m Green
+    \x1b[93m Yellow
+    \x1b[94m Blue
+    \x1b[95m Magenta
+    \x1b[96m Cyan
+    \x1b[97m White
+
+背景 (40-47):
+    \x1b[40m  Black
+    \x1b[41m  Red
+    \x1b[42m  Green
+    \x1b[43m  Yellow
+    \x1b[44m  Blue
+    \x1b[45m  Magenta
+    \x1b[46m  Cyan
+    \x1b[47m  White
+
+亮背景 (100-107):
+    \x1b[100m  Black
+    \x1b[101m  Red
+    \x1b[102m  Green
+    \x1b[103m  Yellow
+    \x1b[104m  Blue
+    \x1b[105m  Magenta
+    \x1b[106m  Cyan
+    \x1b[107m  White
 
 */
 public class UsingANSI
@@ -102,7 +144,7 @@ public class UsingANSI
     {
         string[] names = { "Black ", "Red   ", "Green ", "Yellow", "Blue  ", "Magenta", "Cyan  ", "White " };
 
-        Console.WriteLine("前景 (30–37):");
+        Console.WriteLine("前景 (30-37):");
         for (int i = 0; i < 8; i++)
         {
             Console.Write(Sgr(showCode: true, 30 + i));
@@ -111,7 +153,7 @@ public class UsingANSI
         Console.Write(Sgr(0));
         Console.WriteLine();
 
-        Console.WriteLine("亮前景 (90–97):");
+        Console.WriteLine("亮前景 (90-97):");
         for (int i = 0; i < 8; i++)
         {
             Console.Write(Sgr(showCode: true, 90 + i));
@@ -120,7 +162,7 @@ public class UsingANSI
         Console.Write(Sgr(0));
         Console.WriteLine();
 
-        Console.WriteLine("背景 (40–47):");
+        Console.WriteLine("背景 (40-47):");
         for (int i = 0; i < 8; i++)
         {
             Console.Write(Sgr(30 + (i == 0 ? 7 : 0))); // 讓字在背景上看得到：黑底白字/白底黑字
@@ -131,7 +173,7 @@ public class UsingANSI
         }
         Console.WriteLine();
 
-        Console.WriteLine("亮背景 (100–107):");
+        Console.WriteLine("亮背景 (100-107):");
         for (int i = 0; i < 8; i++)
         {
             Console.Write(Sgr(30 + (i == 7 ? 0 : 7)));

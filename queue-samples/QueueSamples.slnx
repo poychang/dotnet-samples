@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="QueueSamples/QueueSamples.csproj" />
+  <Project Path="UniqueQueue/UniqueQueue.csproj" Id="602b7bba-1dce-43bd-861d-ebec543f64a8" />
+</Solution>
