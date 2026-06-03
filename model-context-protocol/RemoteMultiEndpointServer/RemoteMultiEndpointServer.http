@@ -1,0 +1,6 @@
+@RemoteMultiEndpointServer_HostAddress = http://localhost:5288
+
+GET {{RemoteMultiEndpointServer_HostAddress}}/
+Accept: application/json
+
+###
