@@ -1,28 +1,16 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
+﻿using Azure.AI.Projects;
+using Azure.Identity;
+using Microsoft.Agents.AI;
+using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Configuration;
 using ModelContextProtocol.Client;
+using System.ClientModel.Primitives;
 
 // 讀取設定檔
 var config = new ConfigurationBuilder()
     .AddEnvironmentVariables()
     .AddUserSecrets<Program>()
     .Build();
-
-// 準備 Semantic Kernel
-// ------------------------------------------------------------
-var builder = Kernel.CreateBuilder();
-// builder.Services.AddLogging(c => c.AddDebug().SetMinimumLevel(LogLevel.Trace));
-
-// 設定 Azure OpenAI API
-builder.Services.AddAzureOpenAIChatCompletion(
-    deploymentName: config["PC:AzureOpenAI:DeploymentName"] ?? "MODEL-NAME",
-    endpoint: config["PC:AzureOpenAI:Endpoint"] ?? "https://RESOURCE-NAME.openai.azure.com/",
-    apiKey: config["PC:AzureOpenAI:APIKey"] ?? "",
-    httpClient: HttpLogger.GetHttpClient(true)
-);
-var kernel = builder.Build();
 
 
 // 建立 MCP client
@@ -55,56 +43,45 @@ await using var mcpClient = await McpClient.CreateAsync(remoteTransport);
 
 // 取得 MCP Tools 清單
 // ------------------------------------------------------------
-var tools = await mcpClient.ListToolsAsync().ConfigureAwait(false);
+var mcpTools = await mcpClient.ListToolsAsync().ConfigureAwait(false);
 // 列出 MCP工具名稱和描述
 Console.WriteLine("\nAvailable MCP Tools:");
-foreach (var tool in tools)
+foreach (var tool in mcpTools)
 {
     Console.WriteLine($"\t{tool.Name}: {tool.Description}");
 }
 Console.WriteLine();
 
 
-// 將 MCP 工具轉換為 Semantic Kernel 函數並註冊到 Semantic Kernel 中
+// 準備 Foundry Agent
 // ------------------------------------------------------------
-kernel.Plugins.AddFromFunctions("McpTools", tools.Select(t => t.AsKernelFunction()));
+var endpoint = new Uri(config["PC:MicrosoftFoundry:Endpoint"] ?? "https://RESOURCE-NAME.openai.azure.com/");
+var credential = new ClientSecretCredential(
+    config["PC:MicrosoftFoundry:TenantId"],
+    config["PC:MicrosoftFoundry:ClientId"],
+    config["PC:MicrosoftFoundry:ClientSecret"]);
+var clientOptions = new AIProjectClientOptions();
+clientOptions.AddPolicy(new HttpTrafficLoggingPolicy(), PipelinePosition.PerCall);
 
+AIAgent agent = new AIProjectClient(endpoint, credential, clientOptions)
+    .AsAIAgent(
+        model: config["PC:MicrosoftFoundry:DeploymentName"] ?? "MODEL_NAME",
+        instructions: "你是一位 Model Context Protocol 工具助理，會根據使用者輸入決定是否要使用 tool 來回答問題。",
+        name: "MCPAgent",
+        tools: [.. mcpTools.Cast<AITool>()]
+    );
 
 
 // 測試具有 MCP 工具的對話
 // ------------------------------------------------------------
-// Create chat history 物件，並且加入系統訊息
-var history = new ChatHistory();
-history.AddSystemMessage("你是一位 Model Context Protocol 工具助理，會根據使用者輸入決定是否要使用 tool 來回答問題。");
-
-// Get chat completion service
-var chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
 
 // 開始對談
 Console.Write("\x1b[44mUser >\u001b[0m ");
 string? userInput;
 while (!string.IsNullOrEmpty(userInput = Console.ReadLine()))
 {
-    // Add user input
-    history.AddUserMessage(userInput);
-
-    // Enable auto function calling
-    OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()
-    {
-        ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions
-    };
-
-    // Get the response from the AI
-    var result = await chatCompletionService.GetChatMessageContentAsync(
-        history,
-        executionSettings: openAIPromptExecutionSettings,
-        kernel: kernel);
-
     // Print the results
-    Console.WriteLine("\x1b[42mAssistant >\x1b[0m " + result);
-
-    // Add the message from the agent to the chat history
-    history.AddMessage(result.Role, result.Content ?? string.Empty);
+    Console.WriteLine("\x1b[42mAssistant >\x1b[0m " + await agent.RunAsync(userInput));
 
     // Get user input again
     Console.Write("\x1b[44mUser >\u001b[0m ");
