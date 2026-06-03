@@ -34,7 +34,7 @@ var localExeTransport = new StdioClientTransport(new()
 var remoteTransport = new HttpClientTransport(new()
 {
     Name = "RemoteMcpServer",
-    Endpoint = new Uri("http://localhost:3001/mcp"),
+    Endpoint = new Uri("https://localhost:3001/mcp"),
 });
 
 // 注意：這裡假設 MCP Server 可在本地端運行，並且可以透過 StdioClientTransport 連接
@@ -66,7 +66,7 @@ clientOptions.AddPolicy(new HttpTrafficLoggingPolicy(), PipelinePosition.PerCall
 AIAgent agent = new AIProjectClient(endpoint, credential, clientOptions)
     .AsAIAgent(
         model: config["PC:MicrosoftFoundry:DeploymentName"] ?? "MODEL_NAME",
-        instructions: "你是一位 Model Context Protocol 工具助理，會根據使用者輸入決定是否要使用 tool 來回答問題。",
+        instructions: "你是一位 Model Context Protocol 工具助理，會根據使用者輸入決定是否要使用 tool 來回答問題，並忠實回傳工具所產生的資料。",
         name: "MCPAgent",
         tools: [.. mcpTools.Cast<AITool>()]
     );
