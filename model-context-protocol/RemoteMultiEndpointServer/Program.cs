@@ -18,15 +18,15 @@ builder.Services
     {
         var services = context.Services ?? throw new InvalidOperationException("Service provider is unavailable.");
         var httpContextAccessor = services.GetRequiredService<IHttpContextAccessor>();
-        var serverId = httpContextAccessor
+        var domain = httpContextAccessor
             .HttpContext?
             .Request
-            .RouteValues["serverId"]?
+            .RouteValues["domain"]?
             .ToString();
-        var visibleTools = serverId switch
+        var visibleTools = domain switch
         {
-            "a1" => new[] { McpServerTool.Create(A1Tools.A1) },
-            "a2" => new[] { McpServerTool.Create(A2Tools.A2) },
+            "domain1" => new[] { McpServerTool.Create(Domain1Tools.A1), McpServerTool.Create(Domain1Tools.A2) },
+            "domain2" => new[] { McpServerTool.Create(Domain2Tools.B1) },
             _ => []
         };
 
@@ -39,15 +39,15 @@ builder.Services
     {
         var services = context.Services ?? throw new InvalidOperationException("Service provider is unavailable.");
         var httpContextAccessor = services.GetRequiredService<IHttpContextAccessor>();
-        var serverId = httpContextAccessor
+        var domain = httpContextAccessor
             .HttpContext?
             .Request
-            .RouteValues["serverId"]?
+            .RouteValues["domain"]?
             .ToString();
-        var visibleTools = serverId switch
+        var visibleTools = domain switch
         {
-            "a1" => new[] { McpServerTool.Create(A1Tools.A1) },
-            "a2" => new[] { McpServerTool.Create(A2Tools.A2) },
+            "domain1" => new[] { McpServerTool.Create(Domain1Tools.A1), McpServerTool.Create(Domain1Tools.A2) },
+            "domain2" => new[] { McpServerTool.Create(Domain2Tools.B1) },
             _ => []
         };
         var allowedToolNames = visibleTools.Select(p => p.ProtocolTool.Name);
@@ -56,7 +56,7 @@ builder.Services
         if (!allowedToolNames.Contains(requestedToolName))
         {
             throw new McpProtocolException(
-                $"Tool '{requestedToolName}' is not available on endpoint '{serverId}'.",
+                $"Tool '{requestedToolName}' is not available on endpoint '{domain}'.",
                 McpErrorCode.InvalidRequest);
         }
 
@@ -71,22 +71,25 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.MapMcp("/mcp/{serverId}");
+app.MapMcp("/{domain}/mcp");
 
 app.Run("https://localhost:3001");
 
 
 
 [McpServerToolType]
-public sealed class A1Tools
+public sealed class Domain1Tools
 {
-    [McpServerTool(Name = "A1"), Description("Echoes A1 calling.")]
+    [McpServerTool, Description("Echoes A1 calling.")]
     public static string A1(string input) => $"A1: {input}";
+
+    [McpServerTool, Description("Echoes A2 calling.")]
+    public static string A2(string input) => $"A2: {input}";
 }
 
 [McpServerToolType]
-public sealed class A2Tools
+public sealed class Domain2Tools
 {
-    [McpServerTool(Name = "A2"), Description("Echoes A2 calling.")]
-    public static string A2(string input) => $"A2: {input}";
+    [McpServerTool, Description("Echoes B1 calling.")]
+    public static string B1(string input) => $"B1: {input}";
 }
